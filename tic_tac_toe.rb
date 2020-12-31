@@ -8,11 +8,13 @@ class Game
   def initialize(num_of_players, edge_size)
     @is_game_over = false
     @board = Board.new(edge_size)
-    controller = Controller.new(num_of_players)
+    @controller = Controller.new(num_of_players)
   end
 
   def start_game
     puts 'GAME STARTED'
+    @board.draw_board
+    @board.update_board(@controller.get_input)
     @board.draw_board
   end
 
@@ -31,7 +33,19 @@ class Controller
 
   def create_players(players)
     players = Array.new(players)
-    players.each_index { | i | players[i] = Player.new('Player#{i+1}') }
+    players.each_index { | i | players[i] = Player.new("Player #{i+1}") }
+  end
+
+  def get_input
+    return_array = ["", "name"]
+
+    @players.each do | player |
+      if player.turn_to_go == true
+        puts "It is #{player.name}'s turn to go!"
+      end
+    end
+      # Return array [" letter ", playername]
+      return return_array
   end
 end
 
@@ -42,6 +56,7 @@ class Board
   def initialize(edge_size)
     @edge_size = edge_size
     @board_matrix = Array.new(edge_size) { Array.new(edge_size, '   ') }
+    new_board_grid
   end
 
   def draw_board
@@ -62,7 +77,38 @@ class Board
     end
   end
 
+  def update_board(grid_player_name_array)
+    letter = grid_player_name_array[0]
+    symbol = grid_player_name_array[1] === "Player 1" ? " X " : " O "
+    x = 0
+    y = 0
+
+    # Translates letter input into coordinate
+    @board_matrix.each_index do | i |
+      @board_matrix.each_index do | j |
+        if @board_matrix[i][j] == letter
+          x = i
+          y = j
+        end
+      end
+    end
+
+    @board_matrix[x][y] = symbol
+  end
+
   private
+
+  # Creates initial board with letters to show users for input
+  def new_board_grid
+    unicode = 65
+    @board_matrix.each do | array |
+      @board_matrix.each_with_index do | element, i |
+        array[i] = " #{unicode.chr} "
+        unicode += 1
+      end
+    end
+  end
+
 
   def create_bottom_string
     bottom_line_length = @edge_size * 3 + (@edge_size - 1)

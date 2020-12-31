@@ -11,12 +11,14 @@ class Game
     controller = Controller.new(num_of_players)
   end
 
-  def start_game()
-      puts "game started"
-      @board.draw_board
+  def start_game
+    puts 'GAME STARTED'
+    @board.draw_board
   end
 
-  def end_game()
+  def end_game
+    #check Player.turn_to_go for who won
+    puts 'GAME OVER!'
   end
 end
 
@@ -29,7 +31,7 @@ class Controller
 
   def create_players(players)
     players = Array.new(players)
-    players.each_index { | i | players[i] = Player.new("Player#{i+1}") }
+    players.each_index { | i | players[i] = Player.new('Player#{i+1}') }
   end
 end
 
@@ -47,11 +49,12 @@ class Board
     vertical_line = 1
     bottom_line = 0
     bottom_line_string = create_bottom_string
+    translate_matrix
 
     print "\n"
     @board_matrix.each do |array|
-      array.each do |gridspace|
-        print vertical_line % @edge_size != 0 ? "#{gridspace}|" : gridspace
+      array.each do | element |
+        print vertical_line % @edge_size != 0 ? "#{element}|" : element
         vertical_line += 1
       end
       print bottom_line != @edge_size - 1 ? "\n#{bottom_line_string}\n" : "\n\n"
@@ -70,6 +73,20 @@ class Board
     end
 
     bottom_line_string
+  end
+
+  # Turns numbers into symbols
+  def translate_matrix
+    @board_matrix.each do | array |
+      array.each_with_index do | element, i |
+        case element
+        when 0
+          array[i] = " O "
+        when 1
+          array[i] = " X "
+        end
+      end
+    end
   end
 end
 

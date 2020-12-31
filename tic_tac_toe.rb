@@ -11,11 +11,21 @@ class Game
     @controller = Controller.new(num_of_players)
   end
 
+  #game loop: draw, get input, update board, check game over
+  #if @is_game_over then end_game
   def start_game
     puts 'GAME STARTED'
-    @board.draw_board
-    @board.update_board(@controller.get_input)
-    @board.draw_board
+    while !@is_game_over
+      @board.draw_board
+      @board.update_board(@controller.get_input)
+      is_game_over
+    end
+  end
+
+  def is_game_over
+    #check if there are 3 in a row
+    #if 3 in a row
+      #set boolean to true
   end
 
   def end_game
@@ -28,7 +38,6 @@ end
 class Controller
   def initialize(players)
     @players = create_players(players)
-    @players[0].turn_to_go = true;
   end
 
   def create_players(players)
@@ -37,14 +46,24 @@ class Controller
   end
 
   def get_input
+    switch_player_turn
     @players.each do | player |
       if player.turn_to_go == true
-        puts "It is #{player.name}'s turn to go!"
+        puts "It is #{player.name}'s turn to go!\nEnter which square you want to fill!\n"
+        letter = test_input
+        return [" #{letter} ", player.name]
       end
     end
+  end
 
-      letter = test_input
-      return [" #{letter} ", @players[0].name]
+  def switch_player_turn
+    if @players[0].turn_to_go == true
+      @players[0].turn_to_go = false
+      @players[1].turn_to_go = true
+    else
+      @players[0].turn_to_go = true
+      @players[1].turn_to_go = false
+    end
   end
 
   def test_input

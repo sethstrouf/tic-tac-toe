@@ -11,18 +11,23 @@ class Game
     controller = Controller.new(num_of_players)
   end
 
-  def startGame()
+  def start_game()
       puts "game started"
+      @board.draw_board
+  end
+
+  def end_game()
   end
 end
 
 # Creates players and controls input
 class Controller
   def initialize(players)
-    @players = createPlayers(players)
+    @players = create_players(players)
+    @players[0].turn_to_go = true;
   end
 
-  def createPlayers(players)
+  def create_players(players)
     players = Array.new(players)
     players.each_index { | i | players[i] = Player.new("Player#{i+1}") }
   end
@@ -71,10 +76,12 @@ end
 # Has name
 class Player
   attr_reader :name
+  attr_accessor :turn_to_go
   def initialize(name)
     @name = name
+    @turn_to_go = false;
   end
 end
 
 game = Game.new(2, 3)
-game.startGame
+game.start_game

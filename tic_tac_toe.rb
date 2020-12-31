@@ -71,6 +71,7 @@ class Controller
   def initialize(players)
     @players = create_players(players)
     @player_to_go = @players[1]
+    @stored_guesses = []
   end
 
   def create_players(players)
@@ -98,8 +99,9 @@ class Controller
 
     while test_passed == false
       letter = gets.chomp.upcase
-      if letter >= "A" and letter <= "I"
+      if letter >= "A" and letter <= "I" and !@stored_guesses.include?(letter)
         test_passed = true
+        @stored_guesses.push(letter)
       end
     end
     return letter

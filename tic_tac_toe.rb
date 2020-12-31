@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'pry'
-
 # Creates players/board and passes to a controller, tracks game behavior
 class Game
   def initialize(num_of_players, edge_size)

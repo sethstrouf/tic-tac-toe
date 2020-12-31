@@ -5,6 +5,8 @@ require 'pry'
 
 # Creates players/board and passes to a controller, tracks game behavior
 class Game
+  @@count_turns = 0
+
   def initialize(num_of_players, edge_size)
     @is_game_over = false
     @board = Board.new(edge_size)
@@ -16,28 +18,59 @@ class Game
   def start_game
     puts 'GAME STARTED'
     while !@is_game_over
+      @@count_turns += 1
       @board.draw_board
       @board.update_board(@controller.get_input)
       is_game_over
     end
+    puts @@count_turns
+    end_game
   end
 
   def is_game_over
-    #check if there are 3 in a row
-    #if 3 in a row
-      #set boolean to true
+    b = @board.board_matrix
+    #ROWS
+    if b[0][0] == b[0][1] &&  b[0][1] == b[0][2]
+      @is_game_over = true
+    elsif b[1][0] == b[1][1] &&  b[1][1] == b[1][2]
+      @is_game_over = true
+    elsif b[2][0] == b[2][1] &&  b[2][1] == b[2][2]
+      @is_game_over = true
+    #COLUMNS
+    elsif b[0][0] == b[1][0] &&  b[1][0] == b[2][0]
+      @is_game_over = true
+    elsif b[0][1] == b[1][1] &&  b[1][1] == b[2][1]
+      @is_game_over = true
+    elsif b[2][0] == b[2][1] &&  b[2][1] == b[2][2]
+      @is_game_over = true
+    #DIAGONALS
+    elsif b[0][0] == b[1][1] &&  b[1][1] == b[2][2]
+      @is_game_over = true
+    elsif b[2][0] == b[1][1] &&  b[1][1] == b[0][2]
+      @is_game_over = true
+    elsif @@count_turns==9
+      @is_game_over = true
+    end
   end
 
   def end_game
-    #check Player.turn_to_go for who won
+    @board.draw_board
     puts 'GAME OVER!'
+    if @@count_turns==9
+      puts "IT'S A DRAW!"
+    else
+      puts "#{@controller.player_to_go.name} is the winner!!"
+    end
   end
 end
 
 # Creates players and controls input
 class Controller
+  attr_reader :player_to_go
+
   def initialize(players)
     @players = create_players(players)
+    @player_to_go = @players[1]
   end
 
   def create_players(players)
@@ -47,22 +80,16 @@ class Controller
 
   def get_input
     switch_player_turn
-    @players.each do | player |
-      if player.turn_to_go == true
-        puts "It is #{player.name}'s turn to go!\nEnter which square you want to fill!\n"
-        letter = test_input
-        return [" #{letter} ", player.name]
-      end
-    end
+      puts "It is #{@player_to_go.name}'s turn to go!\nEnter which square you want to fill!\n"
+      letter = test_input
+      return [" #{letter} ", @player_to_go.name]
   end
 
   def switch_player_turn
-    if @players[0].turn_to_go == true
-      @players[0].turn_to_go = false
-      @players[1].turn_to_go = true
+    if @player_to_go == @players[0]
+      @player_to_go = @players[1]
     else
-      @players[0].turn_to_go = true
-      @players[1].turn_to_go = false
+      @player_to_go = @players[0]
     end
   end
 

@@ -42,9 +42,21 @@ class Controller
         puts "It is #{player.name}'s turn to go!"
       end
     end
-    letter = gets.chomp
-      # Return array [" letter ", playername]
+
+      letter = test_input
       return [" #{letter} ", @players[0].name]
+  end
+
+  def test_input
+    test_passed = false
+
+    while test_passed == false
+      letter = gets.chomp.upcase
+      if letter >= "A" and letter <= "I"
+        test_passed = true
+      end
+    end
+    return letter
   end
 end
 

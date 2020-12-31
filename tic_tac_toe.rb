@@ -2,13 +2,33 @@
 
 require 'pry'
 
+
+# Creates players/board and passes to a controller, tracks game behavior
 class Game
+  def initialize(num_of_players, edge_size)
+    @is_game_over = false
+    @board = Board.new(edge_size)
+    controller = Controller.new(num_of_players)
+  end
+
+  def startGame()
+      puts "game started"
+  end
 end
 
+# Creates players and controls input
 class Controller
+  def initialize(players)
+    @players = createPlayers(players)
+  end
+
+  def createPlayers(players)
+    players = Array.new(players)
+    players.each_index { | i | players[i] = Player.new("Player#{i+1}") }
+  end
 end
 
-# This will keep track of and draw our game board
+# This will keep track of board matrix, symbols, and draw our game board
 class Board
   attr_accessor :board_matrix
 
@@ -48,8 +68,13 @@ class Board
   end
 end
 
+# Has name
 class Player
+  attr_reader :name
+  def initialize(name)
+    @name = name
+  end
 end
 
-board = Board.new(3)
-board.draw_board
+game = Game.new(2, 3)
+game.startGame

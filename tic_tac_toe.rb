@@ -37,15 +37,14 @@ class Controller
   end
 
   def get_input
-    return_array = ["", "name"]
-
     @players.each do | player |
       if player.turn_to_go == true
         puts "It is #{player.name}'s turn to go!"
       end
     end
+    letter = gets.chomp
       # Return array [" letter ", playername]
-      return return_array
+      return [" #{letter} ", @players[0].name]
   end
 end
 
